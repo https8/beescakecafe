@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bee's Cake Café – Brno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --honey: #D4820A;
+    --honey-light: #F5C842;
+    --honey-pale: #FDF3DC;
+    --cream: #FBF5EC;
+    --espresso: #2C1A0E;
+    --warm-brown: #6B3F1E;
+    --text: #3A2210;
+    --muted: #8B6B52;
+    --white: #FFFFFF;
+    --radius: 16px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 5%;
+    background: rgba(251,245,236,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(212,130,10,0.15);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--espresso);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--honey); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.9rem; font-weight: 500; color: var(--warm-brown);
+    text-decoration: none; letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--honey); }
+  .nav-cta {
+    background: var(--honey); color: var(--white) !important;
+    padding: 0.55rem 1.4rem; border-radius: 50px;
+    font-weight: 500 !important;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+  .nav-cta:hover { background: var(--warm-brown) !important; transform: scale(1.03); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 5% 4rem;
+    gap: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 70% 50%, rgba(245,200,66,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 10% 80%, rgba(212,130,10,0.08) 0%, transparent 60%),
+      var(--cream);
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--honey-pale); border: 1px solid rgba(212,130,10,0.3);
+    padding: 0.4rem 1rem; border-radius: 50px;
+    font-size: 0.82rem; font-weight: 500; color: var(--honey);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero-badge::before { content: '★'; font-size: 0.75rem; }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+    line-height: 1.15;
+    color: var(--espresso);
+    margin-bottom: 1.2rem;
+  }
+  .hero-title em { color: var(--honey); font-style: italic; }
+  .hero-subtitle {
+    font-size: 1.05rem; color: var(--muted); line-height: 1.7;
+    max-width: 480px; margin-bottom: 2rem; font-weight: 300;
+  }
+  .hero-meta {
+    display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  }
+  .hero-rating {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-weight: 500; color: var(--espresso); font-size: 0.95rem;
+  }
+  .stars { color: var(--honey-light); font-size: 0.9rem; letter-spacing: -1px; }
+  .hero-info { font-size: 0.85rem; color: var(--muted); }
+
+  /* HERO FORM CARD */
+  .hero-form-card {
+    position: relative; z-index: 1;
+    background: var(--white);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow:
+      0 2px 0 rgba(212,130,10,0.15),
+      0 20px 60px rgba(44,26,14,0.12),
+      0 2px 8px rgba(44,26,14,0.06);
+    border: 1px solid rgba(212,130,10,0.12);
+  }
+  .form-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; color: var(--espresso);
+    margin-bottom: 0.4rem;
+  }
+  .form-sub { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.8rem; }
+  .form-group { margin-bottom: 1.1rem; }
+  .form-group label {
+    display: block; font-size: 0.82rem; font-weight: 500;
+    color: var(--warm-brown); margin-bottom: 0.4rem; letter-spacing: 0.02em;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%; padding: 0.75rem 1rem;
+    border: 1.5px solid rgba(107,63,30,0.2);
+    border-radius: 10px; font-family: inherit; font-size: 0.93rem;
+    background: var(--cream); color: var(--text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--honey);
+    box-shadow: 0 0 0 3px rgba(212,130,10,0.12);
+  }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .btn-primary {
+    width: 100%; padding: 0.9rem;
+    background: var(--honey); color: var(--white);
+    border: none; border-radius: 12px;
+    font-family: inherit; font-size: 1rem; font-weight: 500;
+    cursor: pointer; letter-spacing: 0.02em;
+    transition: background 0.2s, transform 0.15s;
+    margin-top: 0.5rem;
+  }
+  .btn-primary:hover { background: var(--espresso); transform: translateY(-1px); }
+  .form-note { text-align: center; font-size: 0.78rem; color: var(--muted); margin-top: 0.8rem; }
+
+  /* SECTION STYLES */
+  section { padding: 6rem 5%; }
+  .section-label {
+    display: inline-block;
+    font-size: 0.78rem; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--honey);
+    margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--espresso); line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .section-desc {
+    font-size: 1rem; color: var(--muted);
+    max-width: 600px; line-height: 1.75; font-weight: 300;
+  }
+  .section-header { margin-bottom: 3.5rem; }
+  .section-header.centered { text-align: center; }
+  .section-header.centered .section-desc { margin: 0 auto; }
+
+  /* SERVICES */
+  #services { background: var(--espresso); }
+  #services .section-label { color: var(--honey-light); }
+  #services .section-title { color: var(--cream); }
+  #services .section-desc { color: rgba(251,245,236,0.65); }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  .service-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(245,200,66,0.15);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: background 0.25s, transform 0.2s;
+  }
+  .service-card:hover {
+    background: rgba(255,255,255,0.09);
+    transform: translateY(-4px);
+  }
+  .service-icon {
+    font-size: 2rem; margin-bottom: 1rem;
+    display: block;
+  }
+  .service-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; color: var(--cream);
+    margin-bottom: 0.6rem;
+  }
+  .service-desc { font-size: 0.9rem; color: rgba(251,245,236,0.6); line-height: 1.65; font-weight: 300; }
+  .service-price {
+    margin-top: 1.2rem;
+    font-size: 0.85rem; font-weight: 500;
+    color: var(--honey-light);
+    letter-spacing: 0.02em;
+  }
+
+  /* WHY US */
+  #why {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .why-visual {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--honey-pale), rgba(212,130,10,0.1));
+    min-height: 480px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(212,130,10,0.2);
+  }
+  .why-visual-inner {
+    text-align: center; padding: 2rem;
+  }
+  .why-big-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 6rem; font-weight: 700;
+    color: var(--honey); line-height: 1;
+    display: block;
+  }
+  .why-big-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; color: var(--espresso);
+    margin-top: 0.5rem; display: block;
+  }
+  .why-divider {
+    width: 60px; height: 2px;
+    background: var(--honey); margin: 1.5rem auto;
+  }
+  .why-sub-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  .why-stat { text-align: center; }
+  .why-stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 600; color: var(--espresso);
+  }
+  .why-stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
+
+  .why-points { display: flex; flex-direction: column; gap: 1.5rem; }
+  .why-point {
+    display: flex; gap: 1.2rem; align-items: flex-start;
+  }
+  .why-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--honey-pale);
+    border: 1px solid rgba(212,130,10,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+  }
+  .why-point-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--espresso);
+    margin-bottom: 0.3rem;
+  }
+  .why-point-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.65; font-weight: 300; }
+
+  /* GALLERY */
+  #gallery { background: var(--honey-pale); }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 1rem;
+  }
+  .gallery-item {
+    border-radius: 16px; overflow: hidden;
+    background: rgba(212,130,10,0.08);
+    border: 1px solid rgba(212,130,10,0.15);
+    display: flex; align-items: center; justify-content: center;
+    min-height: 180px;
+    position: relative;
+    transition: transform 0.2s;
+  }
+  .gallery-item:hover { transform: scale(1.02); }
+  .gallery-item.tall { grid-row: span 2; min-height: 380px; }
+  .gallery-item.wide { grid-column: span 2; }
+  .gallery-inner {
+    text-align: center; padding: 2rem;
+  }
+  .gallery-emoji { font-size: 3rem; display: block; margin-bottom: 0.8rem; }
+  .gallery-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--warm-brown);
+    font-style: italic;
+  }
+
+  /* REVIEWS */
+  #reviews { background: var(--cream); }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .review-card {
+    background: var(--white);
+    border: 1px solid rgba(107,63,30,0.1);
+    border-radius: 20px;
+    padding: 1.8rem;
+    position: relative;
+  }
+  .review-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem; color: var(--honey-light);
+    line-height: 0.5; margin-bottom: 1rem; display: block;
+  }
+  .review-text { font-size: 0.93rem; color: var(--text); line-height: 1.7; font-weight: 300; }
+  .review-author {
+    margin-top: 1.2rem; display: flex; align-items: center; gap: 0.8rem;
+  }
+  .review-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--honey-pale);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 500; font-size: 0.85rem; color: var(--honey);
+    border: 1.5px solid rgba(212,130,10,0.3);
+    flex-shrink: 0;
+  }
+  .review-name { font-weight: 500; font-size: 0.9rem; color: var(--espresso); }
+  .review-date { font-size: 0.78rem; color: var(--muted); }
+  .review-stars { color: var(--honey-light); font-size: 0.8rem; margin-top: 0.1rem; }
+
+  /* FAQ */
+  #faq { background: var(--espresso); }
+  #faq .section-label { color: var(--honey-light); }
+  #faq .section-title { color: var(--cream); }
+  .faq-list { max-width: 720px; margin: 0 auto; }
+  .faq-item {
+    border-bottom: 1px solid rgba(251,245,236,0.1);
+    padding: 1.5rem 0;
+  }
+  .faq-q {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--cream);
+    cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem;
+  }
+  .faq-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid rgba(245,200,66,0.3);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--honey-light); font-size: 1.2rem; flex-shrink: 0;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .faq-item.open .faq-icon { transform: rotate(45deg); background: var(--honey); border-color: var(--honey); }
+  .faq-a {
+    font-size: 0.93rem; color: rgba(251,245,236,0.65);
+    line-height: 1.75; font-weight: 300;
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.2s;
+    padding-top: 0;
+  }
+  .faq-item.open .faq-a { max-height: 200px; padding-top: 1rem; }
+
+  /* CTA */
+  #cta {
+    background: linear-gradient(135deg, var(--honey) 0%, var(--warm-brown) 100%);
+    text-align: center;
+    padding: 7rem 5%;
+    position: relative;
+    overflow: hidden;
+  }
+  #cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,255,255,0.1), transparent);
+  }
+  .cta-inner { position: relative; z-index: 1; max-width: 650px; margin: 0 auto; }
+  .cta-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+    color: var(--white); border-radius: 50px;
+    padding: 0.4rem 1.2rem; font-size: 0.82rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--white); line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .cta-desc { color: rgba(255,255,255,0.8); font-size: 1rem; line-height: 1.7; margin-bottom: 2.5rem; font-weight: 300; }
+  .cta-buttons { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+  .btn-white {
+    background: var(--white); color: var(--honey);
+    padding: 0.9rem 2.2rem; border-radius: 50px;
+    font-family: inherit; font-size: 0.95rem; font-weight: 500;
+    text-decoration: none; display: inline-block;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+  .btn-outline-white {
+    background: transparent; color: var(--white);
+    padding: 0.9rem 2.2rem; border-radius: 50px;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    font-family: inherit; font-size: 0.95rem; font-weight: 500;
+    text-decoration: none; display: inline-block;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .btn-outline-white:hover { background: rgba(255,255,255,0.1); border-color: var(--white); }
+  .cta-contact-info {
+    margin-top: 2.5rem;
+    display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
+  }
+  .cta-contact-item { color: rgba(255,255,255,0.85); font-size: 0.88rem; }
+  .cta-contact-item strong { color: var(--white); }
+
+  /* FOOTER */
+  footer {
+    background: #1A0E06;
+    padding: 2.5rem 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--cream);
+    font-weight: 700;
+  }
+  .footer-logo span { color: var(--honey-light); }
+  .footer-copy { font-size: 0.8rem; color: rgba(251,245,236,0.4); }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+    background: var(--espresso); color: var(--cream);
+    padding: 1rem 1.5rem; border-radius: 12px;
+    font-size: 0.9rem; font-weight: 500;
+    border-left: 4px solid var(--honey);
+    transform: translateY(120%);
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  }
+  .toast.show { transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    #hero { grid-template-columns: 1fr; padding-top: 7rem; }
+    #why { grid-template-columns: 1fr; gap: 3rem; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+    .gallery-item.tall { grid-row: span 1; min-height: 180px; }
+    .gallery-item.wide { grid-column: span 1; }
+    nav .nav-links { display: none; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#hero">Bee's <span>Cake</span> Café</a>
+  <ul class="nav-links">
+    <li><a href="#services">Menu & Služby</a></li>
+    <li><a href="#why">Proč my</a></li>
+    <li><a href="#gallery">Galerie</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#cta" class="nav-cta">Rezervovat stůl</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Hodnocení 4,7 · 166 recenzí</div>
+    <h1 class="hero-title">
+      Útulná kavárna<br>pro ty, kdo milují<br><em>sladký život</em>
+    </h1>
+    <p class="hero-subtitle">
+      Domácí zákusky, výborná káva a matcha, přátelská obsluha – vše pod jednou střechou v srdci brněnských Černých Polí.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-rating">
+        <span class="stars">★★★★★</span>
+        <strong>4,7</strong>
+      </div>
+      <div class="hero-info">📍 Zemědělská 90/19, Brno</div>
+      <div class="hero-info">📞 602 717 197</div>
+    </div>
+  </div>
+
+  <div class="hero-form-card">
+    <h2 class="form-title">Rezervujte stůl</h2>
+    <p class="form-sub">Napište nám a my se vám ozveme do 24 hodin.</p>
+    <form id="contactForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Vaše jméno</label>
+          <input type="text" placeholder="Jana Nováková" required>
+        </div>
+        <div class="form-group">
+          <label>Telefon</label>
+          <input type="tel" placeholder="+420 ···">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" placeholder="vas@email.cz" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Datum návštěvy</label>
+          <input type="date">
+        </div>
+        <div class="form-group">
+          <label>Počet hostů</label>
+          <select>
+            <option>1–2 osoby</option>
+            <option>3–4 osoby</option>
+            <option>5–6 osob</option>
+            <option>Více než 6</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Vzkaz (volitelně)</label>
+        <textarea placeholder="Máte speciální přání nebo alergie? Dejte nám vědět..."></textarea>
+      </div>
+      <button type="submit" class="btn-primary">✉ Odeslat rezervaci</button>
+      <p class="form-note">🔒 Vaše data jsou u nás v bezpečí.</p>
+    </form>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header">
+    <span class="section-label">Co nabízíme</span>
+    <h2 class="section-title" style="color: var(--cream)">Menu & Služby</h2>
+    <p class="section-desc" style="color: rgba(251,245,236,0.6)">Od první kávy rána po odpolední sladkost – u nás najdete vše, co potřebujete k dokonalému dni.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <span class="service-icon">☕</span>
+      <div class="service-name">Specialty Káva</div>
+      <p class="service-desc">Espresso, flat white, cappuccino i filtrovaná káva z pečlivě vybraných zrn. Každý šálek je malý rituál.</p>
+      <div class="service-price">od 55 Kč</div>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🍵</span>
+      <div class="service-name">Matcha & Čaje</div>
+      <p class="service-desc">Japonská matcha, bylinné a ovocné čaje. Naše matcha latte je oblíbená sezónní specialita.</p>
+      <div class="service-price">od 65 Kč</div>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🍰</span>
+      <div class="service-name">Domácí Zákusky</div>
+      <p class="service-desc">Cheesecaky, tartaletky, dorty a sezónní kousky – vše pečeno s láskou přímo u nás. Bee's Cake je naším srdcem.</p>
+      <div class="service-price">od 80 Kč</div>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🥤</span>
+      <div class="service-name">Domácí Limonády</div>
+      <p class="service-desc">Osvěžující limonády z čerstvého ovoce a bylin. Sezónní příchutě se mění každý měsíc.</p>
+      <div class="service-price">od 75 Kč</div>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🥡</span>
+      <div class="service-name">S Sebou & Donáška</div>
+      <p class="service-desc">Vše si můžete odnést nebo si nechat doručit. Dokonalá kavárna dostupná i z pohodlí domova.</p>
+      <div class="service-price">dle výběru</div>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🎂</span>
+      <div class="service-name">Narozeninové Dorty</div>
+      <p class="service-desc">Objednejte si dort na míru pro vaši oslavu. Individuální přístup, skvělý výsledek.</p>
+      <div class="service-price">na dotaz</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="why">
+  <div class="why-visual">
+    <div class="why-visual-inner">
+      <span class="why-big-num">4,7</span>
+      <span class="why-big-label">Průměrné hodnocení</span>
+      <div class="why-divider"></div>
+      <div class="why-sub-stats">
+        <div class="why-stat">
+          <div class="why-stat-num">166+</div>
+          <div class="why-stat-label">Spokojených hostů</div>
+        </div>
+        <div class="why-stat">
+          <div class="why-stat-num">100%</div>
+          <div class="why-stat-label">S láskou vyrobeno</div>
+        </div>
+        <div class="why-stat">
+          <div class="why-stat-num">200 Kč</div>
+          <div class="why-stat-label">Max. za osobu</div>
+        </div>
+        <div class="why-stat">
+          <div class="why-stat-num">3+</div>
+          <div class="why-stat-label">Roky zkušeností</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="section-header">
+      <span class="section-label">Proč si nás hosté oblíbí</span>
+      <h2 class="section-title">Kavárna,<br>která vás <em style="font-family:'Playfair Display',serif; font-style:italic; color:var(--honey)">zahřeje</em></h2>
+      <p class="section-desc">Sami naši zákazníci říkají: "Stojí za to se sem vždy vrátit." A to nás každý den motivuje.</p>
+    </div>
+    <div class="why-points">
+      <div class="why-point">
+        <div class="why-icon">🧁</div>
+        <div>
+          <div class="why-point-title">Opravdu domácí pečení</div>
+          <p class="why-point-desc">Žádné polotovary. Každý zákusek pečeme čerstvě – přesně tak, jak to znáte od babičky, jen o trochu krásnější.</p>
+        </div>
+      </div>
+      <div class="why-point">
+        <div class="why-icon">😊</div>
+        <div>
+          <div class="why-point-title">Nadstandardní přátelská obsluha</div>
+          <p class="why-point-desc">„Nadstandardně příjemná obsluha" – to nejsou naše slova, ale slova našich hostů. Dáváme na to velký důraz každý den.</p>
+        </div>
+      </div>
+      <div class="why-point">
+        <div class="why-icon">🏡</div>
+        <div>
+          <div class="why-point-title">Útulné a čisté prostředí</div>
+          <p class="why-point-desc">Kavárna navržena tak, abyste se cítili jako doma. Klidná atmosféra, příjemné světlo a pohoda na každém kroku.</p>
+        </div>
+      </div>
+      <div class="why-point">
+        <div class="why-icon">💰</div>
+        <div>
+          <div class="why-point-title">Rozumné ceny</div>
+          <p class="why-point-desc">Výborná káva a zákusek za 100–200 Kč na osobu. Kvalita, která se přátelí s vaší peněženkou.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-header centered">
+    <span class="section-label">Galerie</span>
+    <h2 class="section-title">Nahlédněte k nám</h2>
+    <p class="section-desc">Útulný interiér, krásné zákusky a šálky plné chuti – to je Bee's Cake Café.</p>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item tall">
+      <div class="gallery-inner">
+        <span class="gallery-emoji">🍰</span>
+        <div class="gallery-label">Sezónní dorty</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-inner">
+        <span class="gallery-emoji">☕</span>
+        <div class="gallery-label">Latte art</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-inner">
+        <span class="gallery-emoji">🍵</span>
+        <div class="gallery-label">Matcha latte</div>
+      </div>
+    </div>
+    <div class="gallery-item wide">
+      <div class="gallery-inner">
+        <span class="gallery-emoji">🏡</span>
+        <div class="gallery-label">Útulný interiér</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-inner">
+        <span class="gallery-emoji">🧁</span>
+        <div class="gallery-label">Tartaletky</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-inner">
+        <span class="gallery-emoji">🍋</span>
+        <div class="gallery-label">Domácí limonády</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews" style="padding-top: 4rem;">
+  <div class="section-header centered">
+    <span class="section-label">Co říkají hosté</span>
+    <h2 class="section-title">Recenze zákazníků</h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <span class="review-quote">"</span>
+      <p class="review-text">Útulná kavárna, kde jsme narazili na klidné pěkné prostředí. Příjemná obsluha, veliká nabídka kávy i čajů a domácích limonád. Moc chutné zákusky.</p>
+      <div class="review-author">
+        <div class="review-avatar">MB</div>
+        <div>
+          <div class="review-name">Michal Bartášek</div>
+          <div class="review-date">Místní průvodce · před rokem</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <span class="review-quote">"</span>
+      <p class="review-text">Útulná kavárna. Příjemná obsluha a vynikající zákusky. Káva a matcha, kterou mám moc ráda, je za mě taky super. Doporučuji navštívit!</p>
+      <div class="review-author">
+        <div class="review-avatar">KG</div>
+        <div>
+          <div class="review-name">Karyna Gurina</div>
+          <div class="review-date">před 4 měsíci</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <span class="review-quote">"</span>
+      <p class="review-text">Skvělá kavárnička, vynikající zákusky i káva, moc příjemné prostředí, sympatičtí lidé, rozumné ceny. Nemám to sice nejblíž, ale stojí za to se sem zase někdy vrátit!</p>
+      <div class="review-author">
+        <div class="review-avatar">RJ</div>
+        <div>
+          <div class="review-name">Radek Janata</div>
+          <div class="review-date">Místní průvodce · před 2 lety</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-header centered">
+    <span class="section-label">Časté dotazy</span>
+    <h2 class="section-title" style="color: var(--cream)">Vše, co chcete vědět</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Jaká jsou vaše otevírací doba?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Jsme otevřeni každý týden od úterý. Přesné hodiny doporučujeme ověřit na naší stránce na Google nebo Facebooku, otevírací doby se mohou sezonně měnit.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Musím si rezervovat stůl předem?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Pro menší skupiny (1–4 osoby) obvykle rezervace není nutná. Pro větší skupiny nebo speciální příležitosti ji však doporučujeme – kontaktujte nás přes formulář nebo telefon.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Nabízíte donášku nebo jídlo s sebou?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Ano! Veškeré naše produkty si můžete odnést s sebou nebo si je nechat doručit. Kontaktujte nás pro více informací o donášce ve vašem okolí.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Mohu si objednat dort na míru?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Samozřejmě! Vyrábíme dorty na zakázku pro narozeniny, svatby i firemní akce. Kontaktujte nás s dostatečným předstihem a domluvíme vše dle vašich přání.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Kolik stojí průměrná návštěva?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Průměrná cena na osobu je 100–200 Kč. Za tuto cenu se dá vychutnat káva nebo čaj plus domácí zákusek. Nabízíme skvělý poměr ceny a kvality.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Kde vás najdu?
+        <span class="faq-icon">+</span>
+      </div>
+      <div class="faq-a">Najdete nás na adrese Zemědělská 90/19, 613 00 Brno-sever-Černá Pole. Jsme snadno dostupní MHD i autem, v okolí jsou parkovací místa.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-inner">
+    <div class="cta-badge">☕ Přijďte nás navštívit</div>
+    <h2 class="cta-title">Váš oblíbený kout Brna čeká</h2>
+    <p class="cta-desc">Dokonalá káva, domácí zákusek a přátelský úsměv – to je Bee's Cake Café. Přijďte si to vychutnat nebo nám zavolejte.</p>
+    <div class="cta-buttons">
+      <a href="#hero" class="btn-white">Rezervovat stůl</a>
+      <a href="tel:602717197" class="btn-outline-white">📞 602 717 197</a>
+    </div>
+    <div class="cta-contact-info">
+      <div class="cta-contact-item">📍 <strong>Zemědělská 90/19</strong>, Brno</div>
+      <div class="cta-contact-item">🕐 Otevřeno <strong>od úterý v 9:00</strong></div>
+      <div class="cta-contact-item">💳 <strong>100–200 Kč</strong> na osobu</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Bee's <span>Cake</span> Café</div>
+  <div class="footer-copy">© 2025 Bee's Cake Café · Zemědělská 90/19, Brno</div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Rezervace odeslána! Ozveme se vám brzy.</div>
+
+<script>
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+    this.reset();
+  });
+</script>
+</body>
+</html>
